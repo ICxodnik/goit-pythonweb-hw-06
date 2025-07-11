@@ -118,3 +118,36 @@ async def select_10(student_id: int, teacher_id: int):
             .distinct()
         )
         return [row[0] for row in result.all()]
+
+
+# 11. Average grade given by a specific teacher to a specific student
+async def select_11(teacher_id: int, student_id: int):
+    """Return the average grade given by a specific teacher to a specific student across all their subjects."""
+    async with sessionmanager.session() as session:
+        result = await session.execute(
+            select(func.avg(Grade.grade))
+            .join(Subject, Subject.id == Grade.subject_id)
+            .where(Subject.teacher_id == teacher_id, Grade.student_id == student_id)
+        )
+        return result.scalar()
+
+# 12. Grades of students in a group for a subject at the last lesson
+async def select_12(group_id: int, subject_id: int):
+    """Return the grades of students in a group for a subject at the last lesson (latest date_received)."""
+    async with sessionmanager.session() as session:
+        # Find the latest lesson date for this subject and group
+        subq = (
+            select(func.max(Grade.date_received))
+            .join(Student, Student.id == Grade.student_id)
+            .where(Student.group_id == group_id, Grade.subject_id == subject_id)
+        )
+        latest_date = (await session.execute(subq)).scalar()
+        if not latest_date:
+            return []
+        # Get grades for that date
+        result = await session.execute(
+            select(Student.name, Grade.grade)
+            .join(Grade, Student.id == Grade.student_id)
+            .where(Student.group_id == group_id, Grade.subject_id == subject_id, Grade.date_received == latest_date)
+        )
+        return result.all() 
