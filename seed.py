@@ -57,7 +57,17 @@ async def seed():
         print(f"Created {NUM_SUBJECTS} subjects")
 
         # 4. Students (assign a group to each student)
-        students = [Student(name=fake.name(), group_id=choice(groups).id) for _ in range(NUM_STUDENTS)]
+        students = []
+        for _ in range(NUM_STUDENTS):
+            student = Student(
+                name=fake.first_name(),
+                last_name=fake.last_name(),
+                email=fake.unique.email(),
+                phone=fake.numerify(text='###-###-####'),
+                birthday=fake.date_of_birth(minimum_age=16, maximum_age=25),
+                group_id=choice(groups).id
+            )
+            students.append(student)
         session.add_all(students)
         await session.flush()
         print(f"Created {NUM_STUDENTS} students")
