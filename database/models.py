@@ -32,6 +32,10 @@ class Student(Base):
     __tablename__ = "students"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    email: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
+    phone: Mapped[str] = mapped_column(String(20), nullable=True)
+    birthday: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     group_id: Mapped[int] = mapped_column(Integer, ForeignKey("groups.id"), nullable=False)
     group: Mapped["Group"] = relationship("Group", back_populates="students")
     created_at: Mapped[datetime] = mapped_column(

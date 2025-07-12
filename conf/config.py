@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()  # Загружает переменные из .env
+print(os.getenv('POSTGRES_USER'))
+# process.exit(0)
 
 class Config:
     DB_URL = (
