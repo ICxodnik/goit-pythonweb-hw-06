@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import my_select
+import repository.my_select as my_select
 import asyncio
 
 # Helper function for pretty printing
